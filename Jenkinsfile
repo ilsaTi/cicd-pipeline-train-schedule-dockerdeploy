@@ -15,22 +15,23 @@ pipeline {
             steps {
                 script {
                   app= docker.build('joassouramou/deploy_container')
-                    app.inside {
+                  app.inside {
                       sh 'echo $(curl localhost:8080)'
                     }
                 }
             }
-            stage('push the image') {
-                when {
-                  branch 'master'
-                }
-                steps {
-                  docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login')
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
-                }
-            }
            
+           
+        }
+         stage('push the image') {
+            when {
+                branch 'master'
+            }
+            steps {
+                docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login')
+                app.push("${env.BUILD_NUMBER}")
+                app.push("latest")
+            }
         }
     }
 }
